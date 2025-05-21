@@ -11,7 +11,7 @@ if ($conn->connect_error) {
 
 $sql = "SELECT p.idproduto, p.nome_produto, p.preco, p.imagem_produto, c.nome_categoria 
         FROM produto p 
-        INNER JOIN categoria c ON p.categoria_idcategoria = c.idcategoria";
+        INNER JOIN categoria c ON p.categoria_idcategoria = c.idcategoria order by rand()";
 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
