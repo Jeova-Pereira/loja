@@ -13,6 +13,21 @@ $sql = "SELECT p.idproduto, p.nome_produto, p.preco, p.imagem_produto, c.nome_ca
         FROM produto p 
         INNER JOIN categoria c ON p.categoria_idcategoria = c.idcategoria order by rand()";
 $result = $conn->query($sql);
+
+// Consulta para trazer categoria, id e quantidade de produtos por categoria
+$sqlCategorias = "
+    SELECT 
+        c.idcategoria, 
+        c.nome_categoria, 
+        COUNT(p.idproduto) AS quantidade_produtos 
+    FROM categoria c
+    LEFT JOIN produto p ON p.categoria_idcategoria = c.idcategoria
+    GROUP BY c.idcategoria, c.nome_categoria
+    ORDER BY c.nome_categoria
+";
+
+$resultCategorias = $conn->query($sqlCategorias);
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -21,7 +36,7 @@ $result = $conn->query($sql);
     <title>Produtos</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="index.js?v=<?=time()?>" defer></script>
-    <link rel="stylesheet" href="index.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="index.css?v=<?=time()?>">
 </head>
 <body>
     <div id="nav">
@@ -37,6 +52,42 @@ $result = $conn->query($sql);
     </div>
     <h1>PRODUTOS</h1>
     <button onclick="adicionar()">Adicionar produto</button>
+    <button onclick="adicionarCategoria()">Categorias</button>
+
+    <div id="popup-categoria" class="popup">
+      <div class="divpopup categoria-popup">
+        <span class="fechar" onclick="fecharCategoria()">Fechar</span>
+        <h2>Categorias</h2>
+
+        <table class="tabela-categorias">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Categoria</th>
+              <th>Quantidade</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="categorias-lista">
+            <?php
+            if ($resultCategorias->num_rows > 0) {
+                while ($categoria = $resultCategorias->fetch_assoc()) {
+                    echo '<tr>';
+                    echo '<td>' . $categoria['idcategoria'] . '</td>';
+                    echo '<td>' . htmlspecialchars($categoria['nome_categoria']) . '</td>';
+                    echo '<td>' . $categoria['quantidade_produtos'] . '</td>';
+                    echo '<td><button class="remover-btnc" data-id="' . $categoria['idcategoria'] . '">Deletar</button></td>';
+                    echo '</tr>';
+                }
+            } else {
+                echo '<tr><td colspan="4">Nenhuma categoria encontrada.</td></tr>';
+            }
+            ?>
+          </tbody>
+        </table>
+
+      </div>  
+    </div>
 
     <div id="popup" class="popup">
         <div class="divpopup">
@@ -51,7 +102,16 @@ $result = $conn->query($sql);
                 <label>URL da Imagem:</label>
                 <input type="text" id="input_imagem_produto" name="imagem_produto" required>
                 <label>Categoria:</label>
-                <input type="text" id="input_categoria_idcategoria" name="categoria_idcategoria">
+                <select id="input_categoria_idcategoria" name="categoria_idcategoria" required>
+                    <option value="">Selecione a Categoria</option>
+                    <?php
+                    // Recria o resultado para iterar novamente
+                    $resultCategorias->data_seek(0);
+                    while ($categoria = $resultCategorias->fetch_assoc()) {
+                        echo '<option value="' . $categoria['idcategoria'] . '">' . htmlspecialchars($categoria['nome_categoria']) . '</option>';
+                    }
+                    ?>
+                </select>
                 <button type="submit">Salvar</button>
             </form>
         </div>  
@@ -64,11 +124,11 @@ $result = $conn->query($sql);
                 echo '<input type="hidden" value="'.$row["idproduto"].'" class="id_produto">';
                 echo '<button class="editar-btn" onclick="editar(event)">Editar</button>';
                 echo '<button class="remover-btn" onclick="remover(event)">Remover</button>';                       
-                echo '<img src="imagens/' . $row['imagem_produto'] . '" alt="' . $row['nome_produto'] . '">';
+                echo '<img src="imagens/' . $row['imagem_produto'] . '" alt="' . htmlspecialchars($row['nome_produto']) . '">';
                 echo '<div class="info">';
-                echo '<p><strong>' . $row['nome_produto'] . '</strong></p>';
+                echo '<p><strong>' . htmlspecialchars($row['nome_produto']) . '</strong></p>';
                 echo '<p>R$ ' . number_format($row['preco'], 2, ',', '.') . '</p>';
-                echo '<p>' . $row['nome_categoria'] . '</p>';
+                echo '<p>' . htmlspecialchars($row['nome_categoria']) . '</p>';
                 echo '</div>';
                 echo '</div>';
             }

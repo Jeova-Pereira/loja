@@ -68,3 +68,46 @@ document.addEventListener("DOMContentLoaded", function () {
 document.getElementById('logar').addEventListener('click', function(){
     window.location.href = "user.php"
 })
+
+function adicionarCategoria(){
+    document.getElementById('popup-categoria').style.display = "flex";
+    document.getElementById('form-categoria').action = "adicionar_categoria.php";
+    document.getElementById('input_idcategoria').value = "";
+    document.getElementById('input_nome_categoria').value = "";
+}
+
+function fecharCategoria(){
+    document.getElementById('popup-categoria').style.display = "none";
+    document.getElementById('form-categoria').reset();
+    document.getElementById('form-categoria').action = "";
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.remover-btnc').forEach(function(button) {
+        button.addEventListener('click', function () {
+            const row = this.closest('tr');
+            const id = row.querySelector('td').innerText;
+
+            if (confirm("Deseja realmente deletar esta categoria?")) {
+                $.ajax({
+                    url: 'remover_categoria.php',
+                    type: 'POST',
+                    data: { idcategoria: id },
+                    success: function (resposta) {
+                        if (resposta === 'sucesso') {
+                            row.remove();
+                        } else if (resposta === 'erro_produto_vinculado') {
+                            alert("Não é possível deletar uma categoria que possui produtos vinculados.");
+                        } else {
+                            alert("Erro ao deletar categoria.");
+                        }
+                    },
+                    error: function () {
+                        alert("Erro na comunicação com o servidor.");
+                    }
+                });
+            }
+        });
+    });
+});
