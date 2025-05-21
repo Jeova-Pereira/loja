@@ -1,3 +1,49 @@
+.categoria-popup {
+    max-width: 500px; /* Reduzido de 600px para 500px */
+}
+
+.tabela-categorias {
+    width: 100%;
+    border-collapse: collapse;
+    color: #f1f1f1;
+    margin-top: 20px;
+}
+
+.tabela-categorias thead tr {
+    border-bottom: 2px solid #ffb347;
+}
+
+.tabela-categorias th,
+.tabela-categorias td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+}
+
+.tabela-categorias th:last-child,
+.tabela-categorias td:last-child {
+    text-align: center;
+}
+
+.tabela-categorias tbody tr:hover {
+    background-color: rgba(255, 179, 71, 0.1);
+}
+
+.remover-btnc {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.remover-btn:hover {
+    background-color: #c9302c;
+}
+
 html, body {
     min-height: 100vh;
     margin: 0;
@@ -159,6 +205,24 @@ input:focus {
     box-shadow: 0 0 5px rgba(255, 179, 71, 0.7);
 }
 
+/* NOVO - Estilo para <select> */
+select {
+    padding: 14px;
+    font-size: 17px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: white;
+    color: black;
+    width: 100%;
+    transition: 0.3s;
+}
+
+select:focus {
+    outline: none;
+    border-color: #ffb347;
+    box-shadow: 0 0 5px rgba(255, 179, 71, 0.7);
+}
+
 #nav {
     display: flex;
     width: 100%;
@@ -214,4 +278,3 @@ input:focus {
     color: black;
     padding-inline: 10px;
 }
-
