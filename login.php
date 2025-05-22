@@ -2,6 +2,7 @@
 $con = new mysqli("localhost", "root", "", "cegonha");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    //login de administrador(usuario: Admin, senha: 123)
     $usuario = $_POST['usuario'];
     $senha = $_POST['senha'];
 
